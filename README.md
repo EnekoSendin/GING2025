@@ -1,3 +1,7 @@
+# Introduction
+
+The main objective is to analyze the Age of Adquisition of certain words in the Spanish language by using AI models.
+
 # V1 - Batch Generation with OpenAI model
 
 Create a batch to process words (~127.000 different words) from the file *“GPT_estimates_AoA_v1.xlsx”* with a prompt similar to the one described in the file (changed in order to receive an adequate response):
@@ -9,7 +13,7 @@ Create a batch to process words (~127.000 different words) from the file *“GPT
 > El formato de salida debe ser un objeto JSON:  
 > `{AoA: número //AoA de la palabra expresado en años, puede incluir decimales, Word: palabra //string}`”
 
-The AI used in this process is chat **gpt-4o-mini**. The program created generates a file where each line specifies a single request to process with the following format:
+The AI used in this process is chat **gpt-4o-mini** from OpenAI. The program created generates a file where each line specifies a single request to process with the following format:
 
 ```json
 {"custom_id": "task-{index}", "method": "POST", "url": "/v1/chat/completions", "body": {"model": "gpt-4o-mini", "temperature": 0, "response_format": { "type": "json_object"}, "messages": [{ "role": "system",  "content": "prompt" }, {"role": "user","content": "desc"}],}}
@@ -21,7 +25,7 @@ The batch file is subdivided into several smaller batch files with a maximum siz
 
 # V2 – Correlation measurements OpenAI model
 
-In the same line to V1 the file *“Alonso_2014_SpanishAoA.xlsx"* is processed with a batch in OpenAI (~7900 words). This file already contains the estimated AoA of the words provided by a source unknown to the OpenAI model. The new AoA values are obtained from gpt-4o-mini and dumped the in the file *“Results_not_f_t_v01.xlsx”*.
+In the same line to V1 the file *“Alonso_2014_SpanishAoA.xlsx"* is processed with a batch in OpenAI (~7900 words). This file already contains the estimated AoA of the words provided by a source unknown to the OpenAI model. The new AoA values are obtained from **gpt-4o-mini** and dumped the in the file *“Results_not_f_t_v01.xlsx”*.
 We proceed to calculate the correlation coefficients to estimate how similar the AI’s answers are to the ones found in the database:
 
 - Pearson_Corr: 0.7276691992436427
@@ -30,7 +34,7 @@ We proceed to calculate the correlation coefficients to estimate how similar the
 These results are adequate, taking into account the model hasn’t been specifically trained for this task.
 
 # V3 – Fine-tuned model
-To improve previous correlation results we attempted to create a fine-tuned model. For this purpose, we train a model (gpt-4o-mini-2024-07-18) with some of the words in the *“Alonso_2014_SpanishAoA.xlsx"* database.
+To improve previous correlation results we attempted to create a fine-tuned model. For this purpose, we train a model (**gpt-4o-mini-2024-07-18**) with some of the words in the *“Alonso_2014_SpanishAoA.xlsx"* database.
 
 The training format would be the following:
 
