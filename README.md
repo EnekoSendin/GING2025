@@ -94,3 +94,35 @@ In the same way, we store:
 These variables are kept even after stopping the process to ensure that it can be continued after from where it has ended.
 
 After 281 minutes in the host’s computer the 500 threads finished successfully and the contents of the provisional file were dumped into an Excel file (*“ProvResults_all_words.xlsx”*) and ordered alphabetically (the threads finish in a different order that the one in the original datasheet and should be ordered alphabetically afterwards).
+
+# V6 - Batch fixed
+
+In order to fixed the batch the prompt had to be modified:
+
+'''
+La edad de adquisición (AoA) de una palabra se refiere a la edad en la que se aprendió una palabra por primera vez.
+En concreto, cuándo una persona habría entendido por primera vez esa palabra si alguien la hubiera utilizado delante de ella, incluso cuando aún no la hubiera dicho, leído o escrito.
+Estima la edad media de adquisición (AoA) de la palabra "{palabra}" para un hablante nativo de español.
+El formato de salida debe ser un objeto JSON. Por ejemplo: { Word: {palabra} , AoA: //AoA de la palabra expresado en años, puede incluir decimales}
+'''
+
+where the string "{palabra}" is replaced with the word we intend to analyze.
+
+From this new change we redo some calculations:
+1. We redo the petitions without finetuning in the model **gpt-4o-mini** that is collected in the file: *"Results_not_f_t_v01.xlsx"*
+2. We redo the correlation checking exercise with 300, 1000 and 2000 words and the *"Alonso_2014_SpanishAoA.xlsx"* dataset.
+
+| Training words (X)     | Output file     | Pearson_Corr      | Spearman_Corr       |
+|------------------------|-----------------|-------------------|---------------------|
+| **300 words** | *"Results_f_t_corr_300_second.xlsx"* | 0.8849786135186369 | 0.8915389884727313 |
+| **1000 words** | *"Results_f_t_corr_1000_second.xlsx"* | 0.9185403788727302 | 0.918189953082553 |
+| **2000 words** | *"Results_f_t_corr_2000_second.xlsx"* | 0.9289281943692312 | 0.9285513351890939 |
+
+After that, once the the models have been finetunned the database *"GPT_estimates_AoA_v1.xlsx"* resulting in the following result files.
+- **300 words**: *"Results_AoA_f_t_300_second.xlsx"*
+- **1000 words**: *"Results_AoA_f_t_1000_second.xlsx"*
+- **2000 words**: *"Results_AoA_f_t_2000_second.xlsx"*
+
+Once that is done we use the dataset *"AoA_Ratings_Spanish_for_second_finetuning.xlsx"* to do a final finetuning. IN this case all 1966 words have been used for the finetuning. Those results and the previous are stored in the file: *"Results_AoA_f_t_second_v1.xlsx"*
+
+Some of the words outputted from the finetuned model always return as an error (621 words). To solve this issue we propose to round the finetuning AoA to 2 decimal places. This has been done and returned succesfully all the data correctly in the return file: *"Results_AoA_f_t_2000_second_2dp.xlsx"* and added afterwards to the total results file *"Results_AoA_f_t_second_v2.xlsx"*.
