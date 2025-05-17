@@ -97,17 +97,27 @@ After 281 minutes in the host’s computer the 500 threads finished successfully
 
 # V6 - Batch fixed
 
+## Main changes
 In order to fixed the batch the prompt had to be modified:
 
-'''
-La edad de adquisición (AoA) de una palabra se refiere a la edad en la que se aprendió una palabra por primera vez.
-En concreto, cuándo una persona habría entendido por primera vez esa palabra si alguien la hubiera utilizado delante de ella, incluso cuando aún no la hubiera dicho, leído o escrito.
-Estima la edad media de adquisición (AoA) de la palabra "{palabra}" para un hablante nativo de español.
-El formato de salida debe ser un objeto JSON. Por ejemplo: { Word: {palabra} , AoA: //AoA de la palabra expresado en años, puede incluir decimales}
-'''
+>La edad de adquisición (AoA) de una palabra se refiere a la edad en la que se aprendió una palabra por primera vez.
+>En concreto, cuándo una persona habría entendido por primera vez esa palabra si alguien la hubiera utilizado delante de ella, incluso cuando aún no la hubiera dicho, leído o escrito.
+>Estima la edad media de adquisición (AoA) de la palabra "{palabra}" para un hablante nativo de español.
+>El formato de salida debe ser un objeto JSON. Por ejemplo: { Word: {palabra} , AoA: //AoA de la palabra expresado en años, puede incluir decimales}
 
 where the string "{palabra}" is replaced with the word we intend to analyze.
 
+We also change the json object to not include a `system` role:
+```json
+{"custom_id": "task-{index}", "method": "POST", "url": "/v1/chat/completions", "body": {"model": "gpt-4o-mini", "temperature": 0, "response_format": { "type": "json_object"}, "messages": [{"role": "user","content": "prompt"}]}}
+```
+## Functionalties in V6
+The file has various different functionalties to:
+1. finetune the model
+2. check correlation with leftover data
+3. use a finetuned model with large amount of data
+
+## Result files
 From this new change we redo some calculations:
 1. We redo the petitions without finetuning in the model **gpt-4o-mini** that is collected in the file: *"Results_not_f_t_v01.xlsx"*
 2. We redo the correlation checking exercise with 300, 1000 and 2000 words and the *"Alonso_2014_SpanishAoA.xlsx"* dataset.
